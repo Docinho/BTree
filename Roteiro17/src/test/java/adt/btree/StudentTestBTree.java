@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,8 +68,10 @@ public class StudentTestBTree {
 		bt.insert(1);
 		bt.insert(2);
 		assertEquals(0, bt.height());
+		assertEquals("[[1, 2]]", Arrays.toString(bt.depthLeftOrder()));
 		bt.insert(3);
 		assertEquals(1, bt.height());
+		assertEquals("[[2], [1], [3]]", Arrays.toString(bt.depthLeftOrder()));
 		assertArrayEquals(bt.getRoot().getElements().toArray(), new Integer[] { 2 });
 		assertArrayEquals(bt.getRoot().getChildren().get(0).getElements().toArray(), new Integer[] { 1 });
 		assertArrayEquals(bt.getRoot().getChildren().get(1).getElements().toArray(), new Integer[] { 3 });
@@ -79,6 +82,7 @@ public class StudentTestBTree {
 		assertArrayEquals(bt.getRoot().getChildren().get(1).getElements().toArray(), new Integer[] { 3, 4 });
 
 		bt.insert(5);
+		assertEquals("[[2, 4], [1], [3], [5]]", Arrays.toString(bt.depthLeftOrder()));
 		assertArrayEquals(bt.getRoot().getElements().toArray(), new Integer[] { 2, 4 });
 		assertArrayEquals(bt.getRoot().getChildren().get(0).getElements().toArray(), new Integer[] { 1 });
 		assertArrayEquals(bt.getRoot().getChildren().get(1).getElements().toArray(), new Integer[] { 3 });
@@ -91,6 +95,7 @@ public class StudentTestBTree {
 		assertArrayEquals(bt.getRoot().getChildren().get(2).getElements().toArray(), new Integer[] { 5, 6 });
 
 		bt.insert(7);
+		assertEquals("[[4], [2], [1], [3], [6], [5], [7]]", Arrays.toString(bt.depthLeftOrder()));
 		assertArrayEquals(bt.getRoot().getElements().toArray(), new Integer[] { 4 });
 		assertArrayEquals(bt.getRoot().getChildren().get(0).getElements().toArray(), new Integer[] { 2 });
 		assertArrayEquals(bt.getRoot().getChildren().get(0).getChildren().get(0).getElements().toArray(),
@@ -108,7 +113,7 @@ public class StudentTestBTree {
 
 	@Test
 	public void testInsert2() {
-
+		BNode<Integer> node = new BNode<Integer>(4);
 		bt.insert(13);
 		assertArrayEquals(new Integer[] { 13 }, bt.getRoot().getElements().toArray());
 		bt.insert(9);
@@ -117,6 +122,7 @@ public class StudentTestBTree {
 		assertArrayEquals(new Integer[] { 9 }, bt.getRoot().getElements().toArray());
 		assertArrayEquals(new Integer[] { 5 }, bt.getRoot().getChildren().get(0).getElements().toArray());
 		assertArrayEquals(new Integer[] { 13 }, bt.getRoot().getChildren().get(1).getElements().toArray());
+		assertEquals("[[9], [5], [13]]", Arrays.toString(bt.depthLeftOrder()));
 
 		assertEquals(bt.size(), 3);
 		assertEquals(bt.height(), 1);
@@ -130,6 +136,7 @@ public class StudentTestBTree {
 		assertArrayEquals(new Integer[] { 99 }, bt.getRoot().getChildren().get(2).getElements().toArray());
 		bt.insert(-1);
 		assertArrayEquals(new Integer[] { -1, 5 }, bt.getRoot().getChildren().get(0).getElements().toArray());
+		assertEquals("[[9, 13], [-1, 5], [12], [99]]", Arrays.toString(bt.depthLeftOrder()));
 
 		assertEquals(bt.size(), 6);
 		assertEquals(bt.height(), 1);
@@ -150,6 +157,7 @@ public class StudentTestBTree {
 				bt.getRoot().getChildren().get(1).getChildren().get(0).getElements().toArray());
 		assertArrayEquals(new Integer[] { 99, 122 },
 				bt.getRoot().getChildren().get(1).getChildren().get(1).getElements().toArray());
+		assertEquals("[[9], [3], [-1], [5], [13], [12], [99, 122]]", Arrays.toString(bt.depthLeftOrder()));
 
 		bt.insert(76);
 		assertArrayEquals(new Integer[] { 13, 99 }, bt.getRoot().getChildren().get(1).getElements().toArray());
@@ -160,17 +168,21 @@ public class StudentTestBTree {
 		assertArrayEquals(new Integer[] { 122 },
 				bt.getRoot().getChildren().get(1).getChildren().get(2).getElements().toArray());
 		bt.insert(77);
+		assertEquals("[[9], [3], [-1], [5], [13, 99], [12], [76, 77], [122]]", Arrays.toString(bt.depthLeftOrder()));
 
 		assertEquals(bt.size(), 10);
 		assertEquals(bt.height(), 2);
 
 		bt.insert(78);
 		bt.insert(79);
+		assertEquals("[[9, 77], [3], [-1], [5], [13], [12], [76], [99], [78, 79], [122]]",
+				Arrays.toString(bt.depthLeftOrder()));
 		assertArrayEquals(new Integer[] { 9, 77 }, bt.getRoot().getElements().toArray());
 		// noh a esquerda da raiz
 		assertArrayEquals(new Integer[] { 3 }, bt.getRoot().getChildren().get(0).getElements().toArray());
 
-		// noh a esquerda do noh a esquerda da raizhttps://www.google.com.br/search?client=ubuntu&channel=fs&q=cro&ie=utf-8&oe=utf-8&gws_rd=cr&ei=T26LWYLUD4K9wAT7zLDoAw
+		// noh a esquerda do noh a esquerda da
+		// raizhttps://www.google.com.br/search?client=ubuntu&channel=fs&q=cro&ie=utf-8&oe=utf-8&gws_rd=cr&ei=T26LWYLUD4K9wAT7zLDoAw
 		assertArrayEquals(new Integer[] { -1 },
 				bt.getRoot().getChildren().get(0).getChildren().get(0).getElements().toArray());
 		// noh a direita do noh a esquerda da raiz
@@ -199,6 +211,8 @@ public class StudentTestBTree {
 		assertEquals(bt.height(), 2);
 
 		bt.insert(58);
+		assertEquals("[[9, 77], [3], [-1], [5], [13], [12], [58, 76], [99], [78, 79], [122]]",
+				Arrays.toString(bt.depthLeftOrder()));
 		// filho a direita do filho do meio da raiz
 		assertArrayEquals(new Integer[] { 58, 76 },
 				bt.getRoot().getChildren().get(1).getChildren().get(1).getElements().toArray());
@@ -219,6 +233,8 @@ public class StudentTestBTree {
 		assertEquals(bt.height(), 2);
 
 		bt.insert(59);
+		assertEquals("[[9, 77], [3], [-1], [5], [13, 70], [12], [58, 59], [76], [99], [78, 79], [122]]",
+				Arrays.toString(bt.depthLeftOrder()));
 		// filho do meio do filho do meio da raiz
 		assertArrayEquals(new Integer[] { 58, 59 },
 				bt.getRoot().getChildren().get(1).getChildren().get(1).getElements().toArray());
@@ -244,7 +260,20 @@ public class StudentTestBTree {
 
 		bt.insert(141);
 		bt.insert(142);
-
+		assertEquals(
+				"[[77], [9], [3], [-1], [5], [13, 70], [12], [58, 59], [76], [133], [99], [78, 79], [122], [141], [140], [142]]",
+				Arrays.toString(bt.depthLeftOrder()));
+		node.elements = new LinkedList<Integer>();
+		node.elements.add(58);
+		node.elements.add(59);
+		assertEquals(bt.getRoot(), bt.search(77).node);
+		assertEquals(0, bt.search(77).position);
+		assertEquals(bt.getRoot().getChildren().get(0).getChildren().get(1), bt.search(70).node);
+		assertEquals(1, bt.search(70).position);
+		assertEquals(bt.getRoot().getChildren().get(0).getChildren().get(1).getChildren().get(1), bt.search(59).node);
+		assertEquals(1, bt.search(59).position);
+		assertEquals(bt.getRoot().getChildren().get(1).getChildren().get(1).getChildren().get(1), bt.search(142).node);
+		assertEquals(0, bt.search(142).position);
 		// raiz
 		assertArrayEquals(new Integer[] { 77 }, bt.getRoot().getElements().toArray());
 		// noh a esquerda da raiz
@@ -324,6 +353,9 @@ public class StudentTestBTree {
 
 		assertEquals(bt.size(), 25);
 		assertEquals(bt.height(), 3);
+		assertEquals(
+				"[[77], [9, 59], [3], [-1], [5], [13], [12], [58], [70], [60], [76], [133, 143], [99], [78, 79], [122], [141], [140], [142], [146], [145], [147, 148]]",
+				Arrays.toString(bt.depthLeftOrder()));
 
 	}
 

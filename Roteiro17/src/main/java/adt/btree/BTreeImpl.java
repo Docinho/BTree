@@ -64,11 +64,11 @@ public class BTreeImpl<T extends Comparable<T>> implements BTree<T> {
 
 	private int countingNodes(BNode<T> node) {
 		int count = 0;
-		if(node!= null && !node.isEmpty()) {
+		if (node != null && !node.isEmpty()) {
 			count += 1;
-			for (int i = 0; i < node.getChildren().size(); i++) 
+			for (int i = 0; i < node.getChildren().size(); i++)
 				count += countingNodes(node.getChildren().get(i));
-			
+
 		}
 		return count;
 	}
@@ -105,14 +105,24 @@ public class BTreeImpl<T extends Comparable<T>> implements BTree<T> {
 		if (node != null && !node.isEmpty()) {
 			LinkedList<T> nodesList = node.getElements();
 			int i = 0;
-			T elementSearching = null;
-			while (i < nodesList.size() && elementSearching.compareTo(element) < 0)
+			T elementSearching = nodesList.get(i);
+			while (i < nodesList.size() && elementSearching.compareTo(element) < 0) {
 				elementSearching = nodesList.get(i);
+				i++;
+			}
 
-			if (elementSearching.compareTo(element) > 0)
-				returnNode = search(element, node.getChildren().get(i - 1));
-			else if (elementSearching.compareTo(element) == 0)
-				returnNode = new BNodePosition<>(node, i - 1);
+			if (elementSearching.compareTo(element) > 0) {
+				if (i > 0)
+					i--;
+				returnNode = search(element, node.getChildren().get(i));
+			} else if (elementSearching.compareTo(element) == 0) {
+				if (i > 0)
+					i--;
+				returnNode = new BNodePosition<T>(node, i--);
+			} else {
+				if (node.getChildren().size() > i)
+					returnNode = search(element, node.getChildren().get(i));
+			}
 		}
 		return returnNode;
 	}
